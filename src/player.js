@@ -17,6 +17,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     super(scene, width/2, height, 'player');
     
     
+    // Con esto hacemos que su centro de coordenadas esté en el centro de la parte inferior
+    // 0, 0 (arriba izq)   
+    // 1, 1 (abajo der)
     this.setOrigin(0.5, 1);
     this.setScale(1);
 
@@ -28,7 +31,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.speed = 300;
     this.jumpSpeed = -400;
     // Esta label es la UI en la que pondremos la puntuación del jugador
-    this.label = this.scene.add.text(10, 10, "");
+    //Añadimos el setScrollFactor para que no se mueva con el scroll
+    this.label = this.scene.add.text(10, 10, "").setOrigin(0,0).setScrollFactor(0,0);
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.updateScore();
   }
