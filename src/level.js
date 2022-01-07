@@ -19,10 +19,24 @@ export default class Level extends Phaser.Scene {
 
   
 
-  /**
-   * Creación de los elementos de la escena principal de juego
-   */
-  create() {
+  addStandarBG()
+  {
+    this.sky= this.add.image(0,0,'sky').setOrigin(0,0);
+    this.mountains= this.add.image(0,0,'mountains').setOrigin(0,0);    
+  }
+
+
+  // No acaba de funcionar bien, se va quedando en negro
+  addStandarScrollBG()
+  {
+    const {width, height} = this.scale;
+    this.sky= this.add.tileSprite(0,0, width, height,'sky').setOrigin(0,0).setScrollFactor(0.1, 0);
+    this.mountains= this.add.tileSprite(0,0, width, height,'mountains').setOrigin(0,0).setScrollFactor(0.1, 0);    
+  }
+
+  // Este es el que va bien. Si se quiere que no haya Parallax, se pone el ratio a 1
+  addParallaxBG()
+  {
     const {width, height} = this.scale;
     this.backgrounds = [];
     // Añadimos los fondos
@@ -34,24 +48,46 @@ export default class Level extends Phaser.Scene {
             .setScrollFactor(0, 0)
 
       }
-    );
-    //this.load.image('mountains', 'mountains600.png');
-    //Cargamos los fondos para Parallax
-
+    );    
     this.backgrounds.push(
       {
-        ratioX: 1,
+        ratioX: 0.5,
         sprite: this.add.tileSprite(0,100, width, height, 'mountains')
                   .setOrigin(0,0)
                   .setScrollFactor(0, 0)
       }
       );
 
+  }
+
+
+  //Configuración de la camara principal  
+  configCameraForScroll() {
+
+    //Para que siga al jugador
+    this.cameras.main.startFollow(this.player);
+
+    //Para que no se salga de los límites del mundo
+    this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, this.scale.height);
+  }
+
+  /**
+   * Creación de los elementos de la escena principal de juego
+   */
+  create() {
+    const {width, height} = this.scale;
+
+    this.parallaxEnabled= true;
+    
     
     this.stars = 10;
     this.bases = this.add.group();
 
+    //this.addStandarScrollBG();
+    this.addParallaxBG();
 
+
+    // Establecemos los limites del mundo. El ancho lo ponemos a infinito. El alto a la dimensión del gráfico menos 10
     this.physics.world.setBounds(
               0, 0, // x, y
               Number.MAX_SAFE_INTEGER, height - 10 // width, height
@@ -60,16 +96,14 @@ export default class Level extends Phaser.Scene {
 
     this.player = new Player(this, 200, 300);
 
-    this.cameras.main.startFollow(this.player);
-    this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
 
-    /*new Platform(this, this.player, this.bases, 150, 350);
-    new Platform(this, this.player, this.bases, 850, 350);
-    new Platform(this, this.player, this.bases, 500, 200);
-    new Platform(this, this.player, this.bases, 150, 100);
-    new Platform(this, this.player, this.bases, 850, 100);
-    this.spawn();*/
+
+    this.configCameraForScroll();
+
+   
   }
+
+  
 
   /**
    * Genera una estrella en una de las bases del escenario
@@ -100,11 +134,20 @@ export default class Level extends Phaser.Scene {
 
   update()
   {
-    for (let i= 0; i< this.backgrounds.length; ++i)
+    if (!this.parallaxEnabled)
     {
-      const bg= this.backgrounds[i];
-      bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
-      //bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
+      this.sky.tilePositionX= this.cameras.main.scrollX ;
+      this.mountains.tilePositionX= this.cameras.main.scrollX ;
+
+    } 
+    else
+    {
+      for (let i= 0; i< this.backgrounds.length; ++i)
+      {
+        const bg= this.backgrounds[i];
+        bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
+        //bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
+      }
     }
   }
 }
