@@ -17,20 +17,58 @@ export default class Level extends Phaser.Scene {
     super({ key: 'level' });
   }
 
+  
+
   /**
    * Creación de los elementos de la escena principal de juego
    */
   create() {
+    const {width, height} = this.scale;
+    this.backgrounds = [];
+    // Añadimos los fondos
+    this.backgrounds.push(
+      {
+        ratioX: 0.01,
+        sprite: this.add.tileSprite(0,0, width, height,  'sky')
+            .setOrigin(0,0)
+            .setScrollFactor(0.01, 0)
+
+      }
+    );
+    //this.load.image('mountains', 'mountains600.png');
+    //Cargamos los fondos para Parallax
+
+    this.backgrounds.push(
+      {
+        ratioX: 0.1,
+        sprite: this.add.tileSprite(0,0, width, height, 'mountains')
+                  .setOrigin(0,0)
+                  .setScrollFactor(0.1, 0)
+      }
+      );
+
+    
     this.stars = 10;
     this.bases = this.add.group();
+
+
+    this.physics.world.setBounds(
+              0, 0, // x, y
+              Number.MAX_SAFE_INTEGER, height - 10 // width, height
+              )
+      
+
     this.player = new Player(this, 200, 300);
 
-    new Platform(this, this.player, this.bases, 150, 350);
+    this.cameras.main.startFollow(this.player);
+    this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
+
+    /*new Platform(this, this.player, this.bases, 150, 350);
     new Platform(this, this.player, this.bases, 850, 350);
     new Platform(this, this.player, this.bases, 500, 200);
     new Platform(this, this.player, this.bases, 150, 100);
     new Platform(this, this.player, this.bases, 850, 100);
-    this.spawn();
+    this.spawn();*/
   }
 
   /**
@@ -57,5 +95,16 @@ export default class Level extends Phaser.Scene {
         this.spawn(s.filter(o => o !== base));
 
       }
+  }
+
+
+  update()
+  {
+    for (let i= 0; i< this.backgrounds.length; ++i)
+    {
+      const bg= this.backgrounds[i];
+      bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
+      //bg.sprite.tilePositionX= this.cameras.main.scrollX ;
+    }
   }
 }

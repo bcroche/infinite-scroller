@@ -23,6 +23,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', 'base.png');
     this.load.image('star', 'star.png');
     this.load.image('player', 'player.png');
+    
+    //Cargamos los fondos
+    this.load.image('sky', 'sky-clouds.jpg');
+    this.load.image('mountains', 'mountains600.png');
+    
   }
 
   /**
