@@ -33,7 +33,9 @@ export default class Boot extends Phaser.Scene {
     //Cargamos los fondos
     this.load.image('sky', 'sky-clouds.jpg');
     this.load.image('mountains', 'mountains1000.png');
-        
+
+    this.load.setPath('assets/audio/');
+    this.load.audio('explosion', 'explosion.mp3');
     
     
   }

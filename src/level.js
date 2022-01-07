@@ -80,7 +80,32 @@ export default class Level extends Phaser.Scene {
     this.guy = this.physics.add.sprite(posX, this.scale.height, 'guy')
         .setScale(0.1, 0.1)
         .setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, this.guy);//, this.collisionCallback);  
+    this.physics.add.collider(this.player, this.guy, this.collisionCallback);  
+  }
+
+  collisionCallback(ob1, ob2)
+  {
+    
+    ob1.scene.explosion.play();
+    if (ob1.scene.resumeTimeout == 0)
+    {
+      console.log("lanzando timeout");
+      ob1.scene.stopCreacionEnemigo();
+      ob1.scene.resumeTimeout = setTimeout( ob1.scene.resumeScene, 2000, ob1.scene);
+      ob1.scene.scene.pause('level');
+    }  
+    
+    
+  }
+
+  resumeScene(escena)
+  {
+    console.log("resume " );
+    this.resumeTimeout= 0;
+    //escena.registry.destroy(); // destroy registry
+    //escena.events.off(); // disable all active events
+    
+    escena.scene.restart('level');
   }
 
 
@@ -89,6 +114,8 @@ export default class Level extends Phaser.Scene {
    */
   create() {
     const {width, height} = this.scale;
+
+    this.resumeTimeout= 0;
 
     this.parallaxEnabled= true;
 
@@ -108,14 +135,32 @@ export default class Level extends Phaser.Scene {
 
     this.player = new Player(this, 200, 300);
     
-    
-
+  
+    this.explosion = this.sound.add('explosion');
 
     this.configCameraForScroll();
+
+    this.planificaCreacionEnemigo();
 
    
   }
 
+  planificaCreacionEnemigo()
+  {
+    this.myTimeout= setTimeout(this.creaEnemigo, Phaser.Math.RND.between(2000, 4000), this);
+
+  }
+  stopCreacionEnemigo()
+  {
+    clearTimeout(this.myTimeout);
+
+  }
+
+  creaEnemigo(escena)
+  {
+    escena.testSpritePlayer(escena.cameras.main.scrollX + 850);
+    escena.myTimeout= setTimeout(escena.creaEnemigo, Phaser.Math.RND.between(2000, 4000), escena);
+  }
   update()
   {
     if (!this.parallaxEnabled)
@@ -133,7 +178,7 @@ export default class Level extends Phaser.Scene {
       }
     }
 
-    if (this.cameras.main.scrollX % 500 === 0)
-      this.testSpritePlayer(this.cameras.main.scrollX + 800);
+    //if (this.cameras.main.scrollX % 500 === 0)
+//      this.testSpritePlayer(this.cameras.main.scrollX + 800);
   }
 }
