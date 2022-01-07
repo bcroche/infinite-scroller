@@ -71,6 +71,18 @@ export default class Level extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, this.scale.height);
   }
 
+
+
+  // Test create simple sprite 
+  testSpritePlayer()
+  {
+    
+    this.guy = this.physics.add.sprite(100, 450, 'guy')
+        .setScale(0.1, 0.1)
+        .setCollideWorldBounds(true);
+  }
+
+
   /**
    * Creación de los elementos de la escena principal de juego
    */
@@ -95,7 +107,8 @@ export default class Level extends Phaser.Scene {
       
 
     this.player = new Player(this, 200, 300);
-
+    
+    //this.testSpritePlayer();
 
 
     this.configCameraForScroll();

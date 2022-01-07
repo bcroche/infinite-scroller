@@ -14,14 +14,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
 
     const {width, height} = scene.scale;
-    super(scene, width/2, height, 'player');
+    super(scene, width/2, height, 'guy');
     
     
     // Con esto hacemos que su centro de coordenadas esté en el centro de la parte inferior
     // 0, 0 (arriba izq)   
     // 1, 1 (abajo der)
     this.setOrigin(0.5, 1);
-    this.setScale(1);
+    this.setScale(0.1, 0.1);
+
+    this.CreateAnimations();
 
     this.score = 0;
     this.scene.add.existing(this);
@@ -35,6 +37,24 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.label = this.scene.add.text(10, 10, "").setOrigin(0,0).setScrollFactor(0,0);
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.updateScore();
+  }
+
+
+  /** Crea animaciones */
+  CreateAnimations()
+  {
+    this.anims.create({
+      key: 'right',
+      frames: this.anims.generateFrameNumbers('guy', { start: 0, end: 6 }),
+      frameRate: 10,
+      repeat: -1
+  });
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('guy', { start: 7, end: 14 }),
+    frameRate: 10,
+    repeat: -1
+});
   }
 
   /**
@@ -66,12 +86,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
     if (this.cursors.left.isDown) {
       this.body.setVelocityX(-this.speed);
+      this.anims.play('left', true);
     }
     else if (this.cursors.right.isDown) {
+      this.anims.play('right', true);
       this.body.setVelocityX(this.speed);
+      
     }
     else {
       this.body.setVelocityX(0);
+      this.anims.stop();
     }
   }
   
