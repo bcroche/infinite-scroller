@@ -8,7 +8,7 @@ import Level from './level.js';
  */
 let config = {
     type: Phaser.AUTO,
-    width:  5000,
+    width:  800,
     height: 600,
     scale: {
         // mode: Phaser.Scale.FIT,  

@@ -28,10 +28,10 @@ export default class Level extends Phaser.Scene {
     // Añadimos los fondos
     this.backgrounds.push(
       {
-        ratioX: 0.01,
+        ratioX: 0.1,
         sprite: this.add.tileSprite(0,0, width, height,  'sky')
             .setOrigin(0,0)
-            .setScrollFactor(0.01, 0)
+            .setScrollFactor(0, 0)
 
       }
     );
@@ -40,10 +40,10 @@ export default class Level extends Phaser.Scene {
 
     this.backgrounds.push(
       {
-        ratioX: 0.1,
-        sprite: this.add.tileSprite(0,0, width, height, 'mountains')
+        ratioX: 1,
+        sprite: this.add.tileSprite(0,100, width, height, 'mountains')
                   .setOrigin(0,0)
-                  .setScrollFactor(0.1, 0)
+                  .setScrollFactor(0, 0)
       }
       );
 
@@ -104,7 +104,7 @@ export default class Level extends Phaser.Scene {
     {
       const bg= this.backgrounds[i];
       bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
-      //bg.sprite.tilePositionX= this.cameras.main.scrollX ;
+      //bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
     }
   }
 }
