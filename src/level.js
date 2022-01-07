@@ -27,11 +27,11 @@ export default class Level extends Phaser.Scene {
 
 
   // No acaba de funcionar bien, se va quedando en negro
-  addStandarScrollBG()
+  addStandarScrollBG() 
   {
-    const {width, height} = this.scale;
-    this.sky= this.add.tileSprite(0,0, width, height,'sky').setOrigin(0,0).setScrollFactor(0.1, 0);
-    this.mountains= this.add.tileSprite(0,0, width, height,'mountains').setOrigin(0,0).setScrollFactor(0.1, 0);    
+    const { width, height } = this.scale;
+    this.sky = this.add.tileSprite(0, 0, width, height, 'sky').setOrigin(0, 0).setScrollFactor(0, 0);
+    this.mountains = this.add.tileSprite(0, 0, width, height, 'mountains').setOrigin(0, 0).setScrollFactor(0, 0);
   }
 
   // Este es el que va bien. Si se quiere que no haya Parallax, se pone el ratio a 1
@@ -42,7 +42,7 @@ export default class Level extends Phaser.Scene {
     // Añadimos los fondos
     this.backgrounds.push(
       {
-        ratioX: 0.1,
+        ratioX: 0.1, //movimiento en horizontal
         sprite: this.add.tileSprite(0,0, width, height,  'sky')
             .setOrigin(0,0)
             .setScrollFactor(0, 0)
@@ -51,7 +51,7 @@ export default class Level extends Phaser.Scene {
     );    
     this.backgrounds.push(
       {
-        ratioX: 0.5,
+        ratioX: 0.5, //movimiento en horizontal
         sprite: this.add.tileSprite(0,100, width, height, 'mountains')
                   .setOrigin(0,0)
                   .setScrollFactor(0, 0)
@@ -90,13 +90,12 @@ export default class Level extends Phaser.Scene {
     const {width, height} = this.scale;
 
     this.parallaxEnabled= true;
-    
-    
-    this.stars = 10;
-    this.bases = this.add.group();
 
-    //this.addStandarScrollBG();
-    this.addParallaxBG();
+    if (this.parallaxEnabled)
+      this.addParallaxBG();
+    else
+      this.addStandarScrollBG();
+    
 
 
     // Establecemos los limites del mundo. El ancho lo ponemos a infinito. El alto a la dimensión del gráfico menos 10
@@ -116,40 +115,11 @@ export default class Level extends Phaser.Scene {
    
   }
 
-  
-
-  /**
-   * Genera una estrella en una de las bases del escenario
-   * @param {Array<Base>} from Lista de bases sobre las que se puede crear una estrella
-   * Si es null, entonces se crea aleatoriamente sobre cualquiera de las bases existentes
-   */
-  spawn(from = null) {
-    Phaser.Math.RND.pick(from || this.bases.children.entries).spawn();
-  }
-
-  /**
-   * Método que se ejecuta al coger una estrella. Se pasa la base
-   * sobre la que estaba la estrella cogida para evitar repeticiones
-   * @param {Base} base La base sobre la que estaba la estrella que se ha cogido
-   */
-  starPickt (base) {
-    this.player.point();
-      if (this.player.score == this.stars) {
-        this.scene.start('end');
-      }
-      else {
-        let s = this.bases.children.entries;
-        this.spawn(s.filter(o => o !== base));
-
-      }
-  }
-
-
   update()
   {
     if (!this.parallaxEnabled)
     {
-      this.sky.tilePositionX= this.cameras.main.scrollX ;
+      this.sky.tilePositionX= this.cameras.main.scrollX ; //multiplicar por ratio para parallax rápido
       this.mountains.tilePositionX= this.cameras.main.scrollX ;
 
     } 
@@ -159,7 +129,6 @@ export default class Level extends Phaser.Scene {
       {
         const bg= this.backgrounds[i];
         bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
-        //bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
       }
     }
   }

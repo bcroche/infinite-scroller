@@ -18,10 +18,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
     
     
     // Con esto hacemos que su centro de coordenadas esté en el centro de la parte inferior
-    // 0, 0 (arriba izq)   
-    // 1, 1 (abajo der)
+    // 0, 0 (izq arriba)   
+    // 1, 1 (der abajo)
     this.setOrigin(0.5, 1);
-    this.setScale(0.1, 0.1);
+    this.setScale(0.25, 0.25);
 
     this.CreateAnimations();
 
