@@ -74,12 +74,13 @@ export default class Level extends Phaser.Scene {
 
 
   // Test create simple sprite 
-  testSpritePlayer()
+  testSpritePlayer(posX)
   {
-    
-    this.guy = this.physics.add.sprite(100, 450, 'guy')
+    console.log("creando guy");
+    this.guy = this.physics.add.sprite(posX, this.scale.height, 'guy')
         .setScale(0.1, 0.1)
         .setCollideWorldBounds(true);
+    this.physics.add.collider(this.player, this.guy);//, this.collisionCallback);  
   }
 
 
@@ -107,7 +108,7 @@ export default class Level extends Phaser.Scene {
 
     this.player = new Player(this, 200, 300);
     
-    //this.testSpritePlayer();
+    
 
 
     this.configCameraForScroll();
@@ -131,5 +132,8 @@ export default class Level extends Phaser.Scene {
         bg.sprite.tilePositionX= this.cameras.main.scrollX * bg.ratioX;
       }
     }
+
+    if (this.cameras.main.scrollX % 500 === 0)
+      this.testSpritePlayer(this.cameras.main.scrollX + 800);
   }
 }

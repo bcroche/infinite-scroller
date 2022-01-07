@@ -32,6 +32,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.body.setCollideWorldBounds();
     this.speed = 300;
     this.jumpSpeed = -400;
+    this.body.setBounceX = 0;
     // Esta label es la UI en la que pondremos la puntuación del jugador
     //Añadimos el setScrollFactor para que no se mueva con el scroll
     this.label = this.scene.add.text(10, 10, "").setOrigin(0,0).setScrollFactor(0,0);
@@ -70,7 +71,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
    * Actualiza la UI con la puntuación actual
    */
   updateScore() {
-    this.label.text = 'Score: ' + this.score;
+    this.label.text = 'Score: ' + this.scene.cameras.main.scrollX;
   }
 
   /**
@@ -97,6 +98,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
       this.body.setVelocityX(0);
       this.anims.stop();
     }
+    this.updateScore();
   }
   
 }
