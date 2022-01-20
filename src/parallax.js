@@ -9,12 +9,12 @@ import Player from './player.js';
  * El juego termina cuando el jugador ha recogido 10 estrellas.
  * @extends Phaser.Scene
  */
-export default class Level extends Phaser.Scene {
+export default class Parallax extends Phaser.Scene {
   /**
    * Constructor de la escena
    */
   constructor() {
-    super({ key: 'level' });
+    super({ key: 'parallax' });
   }
 
   
@@ -81,6 +81,7 @@ export default class Level extends Phaser.Scene {
         .setScale(0.1, 0.1)
         .setCollideWorldBounds(true);
     this.physics.add.collider(this.player, this.guy);//, this.collisionCallback);  
+    this.guy.body.setVelocityX = -5;
   }
 
 
@@ -113,8 +114,15 @@ export default class Level extends Phaser.Scene {
 
     this.configCameraForScroll();
 
-   
+   this.obstacleInProgress = false;
   }
+
+  getRandomTime(min, max) 
+  {
+    let num = Math.random();
+    return Math.floor((num + min) * max);
+  }
+
 
   update()
   {
@@ -133,7 +141,20 @@ export default class Level extends Phaser.Scene {
       }
     }
 
-    if (this.cameras.main.scrollX % 500 === 0)
-      this.testSpritePlayer(this.cameras.main.scrollX + 800);
+    if (!this.obstacleInProgress)
+    {
+      this.obstacleInProgress = true;
+      const myTimeout = setTimeout(this.createObstacle, this.getRandomTime(2000, 4000));
+    }
+      
+
+    //if (this.cameras.main.scrollX % 500 === 0)
+      
+  }
+
+  createObstacle()
+  {
+    this.testSpritePlayer(this.cameras.main.scrollX + 800);
+    this.obstacleInProgress = false;
   }
 }
